@@ -4,10 +4,10 @@ import requests
 class Team:
     def __init__(self, team_html):
         self.isDefined = True
-        heros_links = team_html.select(".match-team-table .image-container-hero a")
-        heros = []
-        for link in heros_links:
-            heros.append(link['href'].split('/')[-1])
+        heroes_links = team_html.select(".match-team-table .image-container-hero a")
+        heroes = []
+        for link in heroes_links:
+            heroes.append(link['href'].split('/')[-1])
 
         self.carry = None
         self.mider = None
@@ -25,18 +25,18 @@ class Team:
                 lane = lane_tags[i]['class'][-1]
                 if role == "core-icon":
                     if lane == "safelane-icon":
-                        self.carry = heros[i]
+                        self.carry = heroes[i]
                     elif lane == "midlane-icon":
-                        self.mider = heros[i]
+                        self.mider = heroes[i]
                     elif lane == "offlane-icon":
-                        self.offlaner = heros[i]
+                        self.offlaner = heroes[i]
                     else:
-                        self.support = heros[i]
+                        self.support = heroes[i]
                 else:
                     if lane == "safelane-icon":
-                        self.hardSupport = heros[i]
+                        self.hardSupport = heroes[i]
                     else:
-                        self.support = heros[i]
+                        self.support = heroes[i]
         if self.carry is None or self.mider is None or self.offlaner is None or self.support is None or self.hardSupport is None:
             self.isDefined = False
 
