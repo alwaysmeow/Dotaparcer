@@ -1,12 +1,17 @@
 import pandas as pd
+from datetime import date
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
     }
 
 class Heroes:
-    def __init__(self):
-        self.df = pd.read_csv("dota2_heroes.csv", index_col="Key")
+    def __init__(self, data = None):
+        if data is None:
+            self.df = pd.read_csv("dota2_heroes_actual.csv", index_col="Key")
+        else:
+            self.df = pd.DataFrame(data)
+            self.df.set_index("Key", inplace = True)
     
     def searchByName(self, name):
         name = name.replace(" ", "-").replace("'", "").lower()
@@ -18,7 +23,6 @@ class Heroes:
             return answer[0]
     
     def save(self):
-        self.df.to_csv('dota2_heroes.csv', index_label='Key')
-
-h = Heroes()
-h.searchByName("batrider")
+        today = date.today().strftime("%d.%m.%Y")
+        self.df.to_csv(f'heros_stats/dota2_heroes_{today}.csv', index_label='Key')
+        self.df.to_csv(f'dota2_heroes_actual.csv', index_label='Key')
