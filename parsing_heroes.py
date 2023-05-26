@@ -12,11 +12,19 @@ soup = BeautifulSoup(resp.text, "lxml")
 
 heroes_a = soup.select(".hero-grid a")
 
-heroes = {}
+heroes = []
 
 for i in range(len(heroes_a)):
-    heroes[i + 1] = heroes_a[i]['href'].split('/')[-1]
+    heroes.append(heroes_a[i]['href'].split('/')[-1])
 
-df = pd.DataFrame.from_dict(heroes, orient='index', columns=['Name'])
+keys = range(1, len(heroes) + 1)
+
+data = {
+    "Key": keys,
+    "Name": heroes,
+}
+
+df = pd.DataFrame(data)
+df.set_index("Key", inplace = True)
 
 df.to_csv('dota2_heroes_indexes.csv', index_label='Key')
