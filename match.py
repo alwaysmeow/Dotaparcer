@@ -10,11 +10,7 @@ class Team:
         for link in heroes_links:
             heroes.append(link['href'].split('/')[-1])
 
-        self.carry = None
-        self.mider = None
-        self.offlaner = None
-        self.support = None
-        self.hardSupport = None
+        self.heroes = [None, None, None, None, None]
 
         role_tags = team_html.select(".tf-fa .role-icon")
         lane_tags = team_html.select(".tf-fa .lane-icon")
@@ -26,27 +22,27 @@ class Team:
                 lane = lane_tags[i]['class'][-1]
                 if role == "core-icon":
                     if lane == "safelane-icon":
-                        self.carry = heroes[i]
+                        self.heroes[0] = heroes[i]
                     elif lane == "midlane-icon":
-                        self.mider = heroes[i]
+                        self.heroes[1] = heroes[i]
                     elif lane == "offlane-icon":
-                        self.offlaner = heroes[i]
+                        self.heroes[2] = heroes[i]
                     else:
-                        self.support = heroes[i]
+                        self.heroes[3] = heroes[i]
                 else:
                     if lane == "safelane-icon":
-                        self.hardSupport = heroes[i]
+                        self.heroes[4] = heroes[i]
                     else:
-                        self.support = heroes[i]
-        if self.carry is None or self.mider is None or self.offlaner is None or self.support is None or self.hardSupport is None:
+                        self.heroes[3] = heroes[i]
+        if self.heroes[0] is None or self.heroes[1] is None or self.heroes[2] is None or self.heroes[3] is None or self.heroes[4] is None:
             self.isDefined = False
 
     def consoleOutput(self):
-        print("Carry:", self.carry)
-        print("Mider:", self.mider)
-        print("Offlaner:", self.offlaner)
-        print("Support:", self.support)
-        print("Hard Support:", self.hardSupport)
+        print("Carry:", self.heroes[0])
+        print("Mider:", self.heroes[1])
+        print("Offlaner:", self.heroes[2])
+        print("Support:", self.heroes[3])
+        print("Hard Support:", self.heroes[4])
 
 class Match:
     def __init__(self, id):

@@ -1,7 +1,8 @@
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
-from tools import *
+from tools import headers
+from heroes_data import HeroesData
 
 # Parsing heroes from Dotabuff
 url = "https://dotabuff.com/heroes"
@@ -15,21 +16,22 @@ heroes = []
 for i in range(len(heroes_a)):
     heroes.append(heroes_a[i]['href'].split('/')[-1])
 
-keys = range(1, len(heroes) + 1)
+number_of_heroes = len(heroes)
+keys = range(1, number_of_heroes + 1)
 
 data = {
     "Key": keys,
     "Name": heroes,
-    "pos1_value": [0] * 124,
-    "pos2_value": [0] * 124,
-    "pos3_value": [0] * 124,
-    "pos4_value": [0] * 124,
-    "pos5_value": [0] * 124,
+    "pos1_value": [0] * number_of_heroes,
+    "pos2_value": [0] * number_of_heroes,
+    "pos3_value": [0] * number_of_heroes,
+    "pos4_value": [0] * number_of_heroes,
+    "pos5_value": [0] * number_of_heroes,
 }
 
-HeroesData = Heroes(data)
+HeroesData = HeroesData(data)
 
-#Parcing stats from protracker
+#Parcing stats from Protracker
 url = "https://www.dota2protracker.com/"
 resp = requests.get(url, headers=headers)
 soup = BeautifulSoup(resp.text, "lxml")
