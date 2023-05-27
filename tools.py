@@ -23,6 +23,6 @@ class Heroes:
             return answer[0]
     
     def save(self):
-        today = date.today().strftime("%d.%m.%Y")
+        today = date.today().strftime("%m.%Y")
         self.df.to_csv(f'heros_stats/dota2_heroes_{today}.csv', index_label='Key')
         self.df.to_csv(f'dota2_heroes_actual.csv', index_label='Key')
