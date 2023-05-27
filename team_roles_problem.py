@@ -16,6 +16,8 @@ class TeamRolesProblem:
             for j in range(i):
                 if self.values[i][j] == 1:
                     pick[i], pick[j] = pick[j], pick[i]
+        
+        return pick
     
     def maxValueSearch(self):
         max = -float("inf")
@@ -44,3 +46,5 @@ class TeamRolesProblem:
                 if self.values[i][j] != 1 and self.values[i][j] != 0:
                     return False
         return True
+    
+print(TeamRolesProblem().solve(["juggernaut", "pugna", "visage", "primal-beast", "sniper"]))
