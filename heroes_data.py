@@ -19,6 +19,9 @@ class HeroesData:
         else:
             return answer[0]
     
+    def getName(self, key):
+        return self.df.loc[key, "Name"]
+    
     def getPositionValues(self, key):
         return list(self.df.loc[key])[1:]
     
@@ -35,6 +38,7 @@ class HeroesData:
                 self.getPositionValues(keys[4]),
             ]
             return np.array(values)
+
     def save(self):
         today = date.today().strftime("%m.%Y")
         self.df.to_csv(f'heroes_stats/dota2_heroes_{today}.csv', index_label='Key')

@@ -11,13 +11,13 @@ class TeamRolesProblem:
 
         while not self.solved():
             self.setPos(*self.maxValueSearch())
+
+        newKeys = keys @ self.values
+        answer = []
+        for key in newKeys:
+            answer.append(h.getName(key))
         
-        for i in range(1, 5):
-            for j in range(i):
-                if self.values[i][j] == 1:
-                    pick[i], pick[j] = pick[j], pick[i]
-        
-        return pick
+        return answer
     
     def maxValueSearch(self):
         max = -float("inf")
@@ -47,4 +47,4 @@ class TeamRolesProblem:
                     return False
         return True
     
-print(TeamRolesProblem().solve(["juggernaut", "pugna", "visage", "primal-beast", "sniper"]))
+print(TeamRolesProblem().solve(["techies", "magnus", "void-spirit", "witch-doctor", "invoker"]))
