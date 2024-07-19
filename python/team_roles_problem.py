@@ -2,10 +2,13 @@ from heroes_data import HeroesData
 import numpy as np
 
 class TeamRolesProblem:
-    def solve(self, pick):
+    def __init__(self, pick):
+        self.pick = pick
+
+    def solve(self):
         keys = []
         h = HeroesData()
-        for hero in pick:
+        for hero in self.pick:
             keys.append(h.searchByName(hero))
         self.values = h.getTeamPositionValues(keys)
 
@@ -47,4 +50,4 @@ class TeamRolesProblem:
                     return False
         return True
     
-print(TeamRolesProblem().solve(["techies", "magnus", "void-spirit", "witch-doctor", "invoker"]))
+print(TeamRolesProblem(["techies", "magnus", "void-spirit", "witch-doctor", "invoker"]).solve())

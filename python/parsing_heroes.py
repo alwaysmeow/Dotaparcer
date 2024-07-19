@@ -9,7 +9,7 @@ url = "https://dotabuff.com/heroes"
 resp = requests.get(url, headers=headers)
 soup = BeautifulSoup(resp.text, "lxml")
 
-heroes_a = soup.select(".hero-grid a")
+heroes_a = soup.select("table tbody tr div.tw-flex a")
 
 heroes = []
 
@@ -31,7 +31,9 @@ data = {
 
 HeroesData = HeroesData(data)
 
-#Parcing stats from Protracker
+# Parcing stats from Protracker (doesn't work)
+# https://dota2protracker.com/_get/meta/pos-4/html
+
 url = "https://www.dota2protracker.com/"
 resp = requests.get(url, headers=headers)
 soup = BeautifulSoup(resp.text, "lxml")
@@ -43,6 +45,8 @@ tables = {
     4: soup.select(".top-hero-table .tabs-5 tbody tr"),
     5: soup.select(".top-hero-table .tabs-6 tbody tr"),
 }
+
+print(tables)
 
 heroes = {}
 
