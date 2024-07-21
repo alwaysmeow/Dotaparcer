@@ -11,20 +11,16 @@ import (
 type Match struct {
 	Id      int
 	Winner  Side
-	Radiant [5]*Hero
-	Dire    [5]*Hero
+	Radiant Draft
+	Dire    Draft
 }
 
-func (match *Match) log() {
-	fmt.Printf("id: %d:\n\tWinner: %s", match.Id, match.Winner)
+func (match *Match) Log() {
+	fmt.Printf("id: %d:\n\tWinner: %s\n", match.Id, match.Winner)
 	fmt.Println("Radiant:")
-	for i := 0; i < 5; i++ {
-		match.Radiant[i].log()
-	}
+	match.Radiant.log()
 	fmt.Println("Dire:")
-	for i := 0; i < 5; i++ {
-		match.Dire[i].log()
-	}
+	match.Dire.log()
 }
 
 func ParseMatch(id int, heroes *Heroes) (*Match, error) {
@@ -52,10 +48,10 @@ func ParseMatch(id int, heroes *Heroes) (*Match, error) {
 		winner = Dire
 	}
 
-	var teams [10]*Hero
+	var matchHeroes [10]*Hero
 
-	doc.Find("table.match-team-table td.cell-fill-image a").Each(func(i int, s *goquery.Selection) {
-		name := s.AttrOr("href", "")
+	doc.Find("table.match-team-table td.cell-fill-image a").Each(func(i int, tag *goquery.Selection) {
+		name := tag.AttrOr("href", "")
 		name = name[strings.LastIndex(name, "/")+1:]
 		found := false
 		index := 0
@@ -70,7 +66,7 @@ func ParseMatch(id int, heroes *Heroes) (*Match, error) {
 			}
 		}
 		if found {
-			teams[i] = &(*heroes)[index]
+			matchHeroes[i] = &(*heroes)[index]
 		}
 		if !found {
 			fmt.Printf("Can't find hero: %s\n", name)
@@ -80,11 +76,9 @@ func ParseMatch(id int, heroes *Heroes) (*Match, error) {
 	match := Match{
 		Id:      id,
 		Winner:  winner,
-		Radiant: [5]*Hero(teams[:5]),
-		Dire:    [5]*Hero(teams[5:]),
+		Radiant: CreateDraft([5]*Hero(matchHeroes[:5])),
+		Dire:    CreateDraft([5]*Hero(matchHeroes[5:])),
 	}
-
-	match.log()
 
 	return &match, nil
 }

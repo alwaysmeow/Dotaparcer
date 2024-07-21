@@ -12,7 +12,7 @@ import (
 type Hero struct {
 	Name    string
 	Id      int
-	Matches [5]int64
+	Matches [5]int
 	Winrate [5]float64
 }
 
@@ -80,14 +80,14 @@ func ParseHeroes() (*Heroes, error) {
 
 			if pos == 0 {
 				heroes[index].Name = name
-				heroes[index].Matches[pos] = matches
+				heroes[index].Matches[pos] = int(matches)
 				heroes[index].Winrate[pos] = winrate
 			} else {
 				hero, found := heroes.find(name)
 				if !found {
 					hero = heroes.append(Hero{Name: name})
 				}
-				hero.Matches[pos] = matches
+				hero.Matches[pos] = int(matches)
 				hero.Winrate[pos] = winrate
 			}
 		})

@@ -12,5 +12,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	types.ParseMatch(7853986291, heroes)
+	match, _ := types.ParseMatch(7853986291, heroes)
+	match.Log()
 }
