@@ -16,6 +16,13 @@ type Hero struct {
 	Winrate [5]float64
 }
 
+func (hero *Hero) log() {
+	fmt.Printf("%s:\n", hero.Name)
+	for i := 0; i < 5; i++ {
+		fmt.Printf("\tPos %d: %d matches, %.2f winrate\n", i+1, hero.Matches[i], hero.Winrate[i])
+	}
+}
+
 type Heroes []Hero
 
 func (heroes *Heroes) find(name string) (*Hero, bool) {
@@ -86,12 +93,7 @@ func ParseHeroes() (*Heroes, error) {
 		})
 	}
 
-	for _, hero := range heroes {
-		fmt.Println(hero.Name)
-		for pos := 0; pos < 5; pos++ {
-			fmt.Printf("	Pos %d: %d %.2f\n", pos+1, hero.Matches[pos], hero.Winrate[pos])
-		}
-	}
+	// id: https://dota2protracker.com/_get/search
 
 	return &heroes, nil
 }

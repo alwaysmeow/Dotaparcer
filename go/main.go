@@ -2,8 +2,15 @@ package main
 
 import (
 	"dotaparser/types"
+	"os"
 )
 
 func main() {
-	types.ParseHeroes()
+	heroes, err := types.ParseHeroes()
+
+	if err != nil {
+		os.Exit(1)
+	}
+
+	types.ParseMatch(7853986291, heroes)
 }
