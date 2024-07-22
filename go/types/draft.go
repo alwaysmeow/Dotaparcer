@@ -1,5 +1,10 @@
 package types
 
+import (
+	"fmt"
+	"math"
+)
+
 type Draft [5]*Hero
 type DraftGrid [5][5]float64
 
@@ -7,6 +12,8 @@ func (draft Draft) log() {
 	for i := 0; i < 5; i++ {
 		draft[i].log()
 	}
+	fmt.Printf("Accuracy: %.2f\n", draft.Accuracy())
+	fmt.Printf("Winrate: %.2f\n", draft.Winrate())
 }
 
 func CreateDraft(heroes [5]*Hero) Draft {
@@ -86,4 +93,23 @@ func (grid *DraftGrid) correction() {
 			grid[row][col] = grid[row][col] / sum
 		}
 	}
+}
+
+func (draft *Draft) Accuracy() float64 {
+	grid := CreateDraftGrid(*draft)
+	acc := 1.
+	for i := 0; i < 5; i++ {
+		acc *= float64(grid[i][i])
+	}
+	acc = math.Pow(acc, 1.0/5.0)
+	return acc
+}
+
+func (draft *Draft) Winrate() float64 {
+	acc := 1.
+	for i := 0; i < 5; i++ {
+		acc *= float64(draft[i].Winrate[i])
+	}
+	acc = math.Pow(acc, 1.0/5.0)
+	return acc
 }
