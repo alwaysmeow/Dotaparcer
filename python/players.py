@@ -1,10 +1,9 @@
 import requests
 from bs4 import BeautifulSoup
-from tools import headers
 from datetime import datetime, timedelta, timezone
 
 url = "https://dotabuff.com/players"
-resp = requests.get(url, headers=headers)
+resp = requests.get(url)
 soup = BeautifulSoup(resp.text, "lxml")
 
 items = soup.select(".content-inner .sortable tbody tr .cell-large")
