@@ -10,7 +10,7 @@ type DraftGrid [5][5]float64
 
 func (draft Draft) log() {
 	for i := 0; i < 5; i++ {
-		draft[i].log()
+		draft[i].Log()
 	}
 	fmt.Printf("Accuracy: %.2f\n", draft.Accuracy())
 	fmt.Printf("Winrate: %.2f\n", draft.Winrate())
