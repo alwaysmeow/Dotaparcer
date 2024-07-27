@@ -53,22 +53,19 @@ func ParseMatch(id int, heroes *Heroes) (*Match, error) {
 	doc.Find("table.match-team-table td.cell-fill-image a").Each(func(i int, tag *goquery.Selection) {
 		name := tag.AttrOr("href", "")
 		name = name[strings.LastIndex(name, "/")+1:]
-		found := false
-		index := 0
-		for !found && index < len(*heroes) {
-			heroname := (*heroes)[index].Name
+		var hero *Hero
+		for _, h := range *heroes {
+			heroname := h.Name
 			heroname = strings.ReplaceAll(heroname, " ", "-")
 			heroname = strings.ToLower(heroname)
 			if name == heroname {
-				found = true
-			} else {
-				index += 1
+				hero = &h
+				break
 			}
 		}
-		if found {
-			matchHeroes[i] = &(*heroes)[index]
-		}
-		if !found {
+		if hero != nil {
+			matchHeroes[i] = hero
+		} else {
 			fmt.Printf("Can't find hero: %s\n", name)
 		}
 	})

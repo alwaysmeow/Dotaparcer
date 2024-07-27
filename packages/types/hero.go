@@ -1,8 +1,11 @@
 package types
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 
@@ -10,8 +13,8 @@ import (
 )
 
 type Hero struct {
-	Name    string
-	Id      int
+	Name    string `json:"localized_name"`
+	Id      int    `json:"id"`
 	Matches [5]int
 	Winrate [5]float64
 }
@@ -23,24 +26,37 @@ func (hero *Hero) Log() {
 	}
 }
 
-type Heroes []Hero
+type Heroes map[int]Hero
+
+func (heroes *Heroes) Init() {
+	file, _ := os.Open("dotaconstants/build/heroes.json")
+	byteValue, _ := io.ReadAll(file)
+	file.Close()
+
+	_ = json.Unmarshal(byteValue, &heroes)
+
+	for key, hero := range *heroes {
+		if hero.Name == "Outworld Devourer" {
+			updatedHero := hero
+			updatedHero.Name = "Outworld Destroyer"
+			(*heroes)[key] = updatedHero
+		}
+	}
+}
 
 func (heroes *Heroes) find(name string) (*Hero, bool) {
-	for i := range *heroes {
-		if (*heroes)[i].Name == name {
-			return &(*heroes)[i], true
+	for index, hero := range *heroes {
+		if (*heroes)[index].Name == name {
+			return &hero, true
 		}
 	}
 	return nil, false
 }
 
-func (heroes *Heroes) append(hero Hero) *Hero {
-	*heroes = append(*heroes, hero)
-	return &(*heroes)[len(*heroes)-1]
-}
-
 func ParseHeroes() (*Heroes, error) {
 	var heroes Heroes
+	heroes.Init()
+
 	for pos := 0; pos < 5; pos++ {
 		url := fmt.Sprintf("https://dota2protracker.com/_get/meta/pos-%d/html", pos+1)
 
@@ -60,9 +76,6 @@ func ParseHeroes() (*Heroes, error) {
 		}
 
 		doc.Find("div.tbody div.grid").Each(func(index int, tag *goquery.Selection) {
-			if pos == 0 {
-				heroes = append(heroes, Hero{})
-			}
 			name := tag.AttrOr("data-hero", "")
 			name = strings.TrimSpace(name)
 
@@ -78,15 +91,10 @@ func ParseHeroes() (*Heroes, error) {
 				winrate = 0
 			}
 
-			if pos == 0 {
-				heroes[index].Name = name
-				heroes[index].Matches[pos] = int(matches)
-				heroes[index].Winrate[pos] = winrate
+			hero, found := heroes.find(name)
+			if !found {
+				fmt.Printf("%s not found\n", name)
 			} else {
-				hero, found := heroes.find(name)
-				if !found {
-					hero = heroes.append(Hero{Name: name})
-				}
 				hero.Matches[pos] = int(matches)
 				hero.Winrate[pos] = winrate
 			}
