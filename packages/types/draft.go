@@ -1,38 +1,60 @@
 package types
 
-import (
-	"fmt"
-	"math"
-)
+import "fmt"
 
-type Draft [5]*Hero
+type Draft struct {
+	Heroes   [5]*Hero
+	Accuracy float64
+	Winrate  float64
+}
+
 type DraftGrid [5][5]float64
 
-func (draft Draft) log() {
-	for i := 0; i < 5; i++ {
-		draft[i].Log()
+func (draft *Draft) Log() {
+	for _, hero := range draft.Heroes {
+		hero.Log()
 	}
-	fmt.Printf("Accuracy: %.2f\n", draft.Accuracy())
-	fmt.Printf("Winrate: %.2f\n", draft.Winrate())
+	fmt.Printf("Accuracy: %.2f\n", draft.Accuracy)
+	fmt.Printf("Winrate: %.2f\n", draft.Winrate)
+}
+
+func (draft *Draft) Error() float64 {
+	grid := CreateDraftGrid(draft.Heroes)
+	err := 0.
+	for i := 0; i < 4; i++ {
+		for j := i + 1; j < 5; j++ {
+			err += grid[i][j] * grid[j][i]
+		}
+	}
+	return err
 }
 
 func CreateDraft(heroes [5]*Hero) Draft {
 	grid := CreateDraftGrid(heroes)
 
+	accuracy := 1.
+
 	for !grid.solved() {
-		grid.fixation()
+		rounded := grid.fixation()
+		accuracy *= rounded
 		grid.correction()
 	}
 
-	var draft Draft
+	draft := Draft{Accuracy: accuracy}
 
 	for i := 0; i < 5; i++ {
 		for j := 0; j < 5; j++ {
 			if grid[i][j] == 1 {
-				draft[j] = heroes[i]
+				draft.Heroes[j] = heroes[i]
 			}
 		}
 	}
+
+	winrate := 0.
+	for i := 0; i < 5; i++ {
+		winrate += float64(draft.Heroes[i].Winrate[i])
+	}
+	draft.Winrate = winrate / 5
 
 	return draft
 }
@@ -64,7 +86,7 @@ func (grid *DraftGrid) solved() bool {
 	return true
 }
 
-func (grid *DraftGrid) fixation() {
+func (grid *DraftGrid) fixation() float64 {
 	x, y := -1, -1
 
 	for i := 0; i < 5; i++ {
@@ -73,14 +95,25 @@ func (grid *DraftGrid) fixation() {
 				if x+y < 0 || grid[i][j] > grid[x][y] {
 					x, y = i, j
 				}
+			} else {
+				for k := 0; k < 5; k++ {
+					if k != i && grid[k][j] > 0 {
+						x, y = i, j
+					}
+				}
 			}
 		}
 	}
+
+	rounded := grid[x][y]
+
 	for i := 0; i < 5; i++ {
 		grid[x][i] = 0
 		grid[i][y] = 0
 	}
 	grid[x][y] = 1
+
+	return rounded
 }
 
 func (grid *DraftGrid) correction() {
@@ -93,23 +126,4 @@ func (grid *DraftGrid) correction() {
 			grid[row][col] = grid[row][col] / sum
 		}
 	}
-}
-
-func (draft *Draft) Accuracy() float64 {
-	grid := CreateDraftGrid(*draft)
-	acc := 1.
-	for i := 0; i < 5; i++ {
-		acc *= float64(grid[i][i])
-	}
-	acc = math.Pow(acc, 1.0/5.0)
-	return acc
-}
-
-func (draft *Draft) Winrate() float64 {
-	acc := 1.
-	for i := 0; i < 5; i++ {
-		acc *= float64(draft[i].Winrate[i])
-	}
-	acc = math.Pow(acc, 1.0/5.0)
-	return acc
 }

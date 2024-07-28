@@ -18,9 +18,9 @@ type Match struct {
 func (match *Match) Log() {
 	fmt.Printf("id: %d:\n\tWinner: %s\n", match.Id, match.Winner)
 	fmt.Println("Radiant:")
-	match.Radiant.log()
+	match.Radiant.Log()
 	fmt.Println("Dire:")
-	match.Dire.log()
+	match.Dire.Log()
 }
 
 func ParseMatch(id int, heroes *Heroes) (*Match, error) {
