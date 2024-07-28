@@ -30,7 +30,7 @@ func DBinit(db *sql.DB) error {
 	// SQL-запрос для создания таблицы
 	query := `
     CREATE TABLE IF NOT EXISTS heroes (
-        id SERIAL PRIMARY KEY,
+    	id INT PRIMARY KEY,
         name VARCHAR(100) NOT NULL,
         winrates FLOAT8[5],
         matches INT4[5]
@@ -48,14 +48,16 @@ func DBinit(db *sql.DB) error {
 
 func InsertHero(db *sql.DB, hero types.Hero) error {
 	query := `
-    INSERT INTO heroes (name, winrates, matches)
-    VALUES ($1, $2, $3)
+    INSERT INTO heroes (id, name, winrates, matches)
+    VALUES ($1, $2, $3, $4)
+    ON CONFLICT (id) DO UPDATE SET
+        name = EXCLUDED.name,
+        winrates = EXCLUDED.winrates,
+        matches = EXCLUDED.matches
     `
-	fmt.Println("Executing query:", query)
-	fmt.Printf("Parameters: name=%s, winrates=%v, matches=%v\n", hero.Name, hero.Winrate, hero.Matches)
-	_, err := db.Exec(query, hero.Name, pq.Array(hero.Winrate), pq.Array(hero.Matches))
+	_, err := db.Exec(query, hero.Id, hero.Name, pq.Array(hero.Winrate), pq.Array(hero.Matches))
 	if err != nil {
-		return fmt.Errorf("ошибка при вставке данных: %v", err)
+		return fmt.Errorf("data insert error: %v", err)
 	}
 	return nil
 }
@@ -86,4 +88,16 @@ func GetHero(db *sql.DB, id int) (types.Hero, error) {
 
 	fmt.Println(hero)
 	return hero, nil
+}
+
+func InsertHeroes(db *sql.DB, heroes types.Heroes) error {
+	for _, hero := range heroes {
+		err := InsertHero(db, hero)
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+	}
+
+	return nil
 }

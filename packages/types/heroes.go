@@ -20,23 +20,15 @@ func (heroes *Heroes) Init() {
 	file.Close()
 
 	_ = json.Unmarshal(byteValue, &heroes)
-
-	for key, hero := range *heroes {
-		if hero.Name == "Outworld Devourer" {
-			updatedHero := hero
-			updatedHero.Name = "Outworld Destroyer"
-			(*heroes)[key] = updatedHero
-		}
-	}
 }
 
-func (heroes *Heroes) find(name string) (*Hero, bool) {
-	for index, hero := range *heroes {
-		if (*heroes)[index].Name == name {
-			return &hero, true
+func (heroes *Heroes) find(name string) (int, bool) {
+	for key, hero := range *heroes {
+		if hero.Name == name {
+			return key, true
 		}
 	}
-	return nil, false
+	return 0, false
 }
 
 func ParseHeroes() (*Heroes, error) {
@@ -77,12 +69,14 @@ func ParseHeroes() (*Heroes, error) {
 				winrate = 0
 			}
 
-			hero, found := heroes.find(name)
+			key, found := heroes.find(name)
 			if !found {
 				fmt.Printf("%s not found\n", name)
 			} else {
+				hero := heroes[key]
 				hero.Matches[pos] = int(matches)
 				hero.Winrate[pos] = winrate
+				heroes[key] = hero
 			}
 		})
 	}
