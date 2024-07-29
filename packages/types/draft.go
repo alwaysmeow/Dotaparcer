@@ -17,7 +17,7 @@ func (draft *Draft) Log() {
 	}
 	fmt.Printf("Accuracy: %.2f\n", draft.Accuracy)
 	fmt.Printf("Winrate: %.2f\n", draft.Winrate)
-	fmt.Printf("Meta: %.2f\n", draft.Meta)
+	fmt.Printf("Meta: %.4f\n", draft.Meta)
 }
 
 func (draft *Draft) Error() float64 {
@@ -59,7 +59,7 @@ func CreateDraft(heroes [5]*Hero) Draft {
 		meta += float64(draft.Heroes[i].Meta[i])
 	}
 	draft.Winrate = winrate / 5
-	draft.Meta = meta / 5
+	draft.Meta = meta
 
 	return draft
 }

@@ -31,11 +31,28 @@ func (heroes *Heroes) find(name string) (int, bool) {
 	return 0, false
 }
 
+func (heroes *Heroes) CalcMeta() {
+	maxMatches := [5]int{0, 0, 0, 0, 0}
+
+	for _, hero := range *heroes {
+		for pos := 0; pos < 5; pos++ {
+			if hero.Matches[pos] > maxMatches[pos] {
+				maxMatches[pos] = hero.Matches[pos]
+			}
+		}
+	}
+
+	for key, hero := range *heroes {
+		for pos := 0; pos < 5; pos++ {
+			hero.Meta[pos] = hero.Winrate[pos] * float64(hero.Matches[pos]) / float64(maxMatches[pos])
+		}
+		(*heroes)[key] = hero
+	}
+}
+
 func ParseHeroes() (*Heroes, error) {
 	var heroes Heroes
 	heroes.Init()
-
-	maxMatches := [5]int{0, 0, 0, 0, 0}
 
 	for pos := 0; pos < 5; pos++ {
 		url := fmt.Sprintf("https://dota2protracker.com/_get/meta/pos-%d/html", pos+1)
@@ -77,23 +94,13 @@ func ParseHeroes() (*Heroes, error) {
 			} else {
 				hero := heroes[key]
 				hero.Winrate[pos] = winrate / 100
-				matches := int(matches)
-				hero.Matches[pos] = matches
+				hero.Matches[pos] = int(matches)
 				heroes[key] = hero
-
-				if matches > maxMatches[pos] {
-					maxMatches[pos] = matches
-				}
 			}
 		})
 	}
 
-	for key, hero := range heroes {
-		for pos := 0; pos < 5; pos++ {
-			hero.Meta[pos] = hero.Winrate[pos] * float64(hero.Matches[pos]) / float64(maxMatches[pos])
-		}
-		heroes[key] = hero
-	}
+	heroes.CalcMeta()
 
 	// id: https://dota2protracker.com/_get/search
 
