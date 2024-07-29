@@ -6,6 +6,7 @@ type Draft struct {
 	Heroes   [5]*Hero
 	Accuracy float64
 	Winrate  float64
+	Meta     float64
 }
 
 type DraftGrid [5][5]float64
@@ -16,6 +17,7 @@ func (draft *Draft) Log() {
 	}
 	fmt.Printf("Accuracy: %.2f\n", draft.Accuracy)
 	fmt.Printf("Winrate: %.2f\n", draft.Winrate)
+	fmt.Printf("Meta: %.2f\n", draft.Meta)
 }
 
 func (draft *Draft) Error() float64 {
@@ -51,10 +53,13 @@ func CreateDraft(heroes [5]*Hero) Draft {
 	}
 
 	winrate := 0.
+	meta := 0.
 	for i := 0; i < 5; i++ {
 		winrate += float64(draft.Heroes[i].Winrate[i])
+		meta += float64(draft.Heroes[i].Meta[i])
 	}
 	draft.Winrate = winrate / 5
+	draft.Meta = meta / 5
 
 	return draft
 }

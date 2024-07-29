@@ -9,6 +9,7 @@ type Hero struct {
 	Id      int    `json:"id"`
 	Matches [5]int
 	Winrate [5]float64
+	Meta    [5]float64
 }
 
 func (hero *Hero) Log() {
