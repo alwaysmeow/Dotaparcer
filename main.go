@@ -1,23 +1,34 @@
 package main
 
 import (
+	"dotaparser/packages/dotabase"
 	"dotaparser/packages/types"
+	"fmt"
 )
 
 func main() {
 	heroes, _ := types.ParseHeroes()
 
-	/*
-		if err != nil {
-			fmt.Println(err)
+	db := dotabase.GetDB()
+	db.Init()
+
+	teams, err := types.ParseTeams()
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(teams)
+
+	for _, team := range teams {
+		fmt.Printf("Parsing %s", team.Name)
+		matches, _ := team.ParseMatches()
+		for _, matchId := range matches {
+			fmt.Printf("Parsing match %d", matchId)
+			match, _ := types.ParseMatch(matchId, heroes)
+			db.InsertMatch(match, true)
 		}
+	}
 
-		db := dotabase.GetDB()
-		dotabase.DBinit(db)
-		dotabase.InsertHeroes(db, *heroes)
-		db.Close()
-	*/
-
-	match, _ := types.ParseMatch(7758350202, heroes)
-	match.Log()
+	db.Close()
 }

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"math"
 	"net/http"
 	"os"
 	"strconv"
@@ -44,7 +45,7 @@ func (heroes *Heroes) CalcMeta() {
 
 	for key, hero := range *heroes {
 		for pos := 0; pos < 5; pos++ {
-			hero.Meta[pos] = hero.Winrate[pos] * float64(hero.Matches[pos]) / float64(maxMatches[pos])
+			hero.Meta[pos] = hero.Winrate[pos] * math.Sqrt(float64(hero.Matches[pos])/float64(maxMatches[pos]))
 		}
 		(*heroes)[key] = hero
 	}

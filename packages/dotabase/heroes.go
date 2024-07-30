@@ -1,19 +1,18 @@
 package dotabase
 
 import (
-	"database/sql"
 	"dotaparser/packages/types"
 	"fmt"
 
 	"github.com/lib/pq"
 )
 
-func GetHeroes(db *sql.DB) (types.Heroes, error) {
+func (db *dotabase) GetHeroes() (types.Heroes, error) {
 	heroes := types.Heroes{}
 
 	query := `SELECT * FROM heroes;`
 
-	rows, err := db.Query(query)
+	rows, err := db.db.Query(query)
 	if err != nil {
 		return nil, fmt.Errorf("ошибка при выполнении запроса: %v", err)
 	}
@@ -46,9 +45,9 @@ func GetHeroes(db *sql.DB) (types.Heroes, error) {
 	return heroes, nil
 }
 
-func InsertHeroes(db *sql.DB, heroes types.Heroes) error {
+func (db *dotabase) InsertHeroes(heroes types.Heroes) error {
 	for _, hero := range heroes {
-		err := InsertHero(db, hero)
+		err := db.InsertHero(hero)
 		if err != nil {
 			fmt.Println(err)
 			return err

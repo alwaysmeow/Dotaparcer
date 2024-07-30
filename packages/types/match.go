@@ -13,6 +13,7 @@ type Match struct {
 	Winner  Side
 	Radiant Draft
 	Dire    Draft
+	MetaDif float64
 }
 
 func (match *Match) Log() {
@@ -76,6 +77,8 @@ func ParseMatch(id int, heroes *Heroes) (*Match, error) {
 		Radiant: CreateDraft([5]*Hero(matchHeroes[:5])),
 		Dire:    CreateDraft([5]*Hero(matchHeroes[5:])),
 	}
+
+	match.MetaDif = match.Radiant.Meta - match.Dire.Meta
 
 	return &match, nil
 }

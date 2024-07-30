@@ -43,7 +43,7 @@ func ParseTeams() ([]Team, error) {
 	return teams, nil
 }
 
-func ParseTeamMatches(team Team) ([]int, error) {
+func (team *Team) ParseMatches() ([]int, error) {
 	url := fmt.Sprintf("https://ru.dotabuff.com/esports/teams/%s/matches", team.Id)
 	resp, err := http.Get(url)
 	if err != nil {

@@ -15,6 +15,6 @@ type Hero struct {
 func (hero *Hero) Log() {
 	fmt.Printf("%s:\n", hero.Name)
 	for i := 0; i < 5; i++ {
-		fmt.Printf("\tPos %d: %d matches, %.2f winrate\n", i+1, hero.Matches[i], hero.Winrate[i])
+		fmt.Printf("\tPos %d: %d matches, %.2f winrate, %.4f meta\n", i+1, hero.Matches[i], hero.Winrate[i], hero.Meta[i])
 	}
 }
