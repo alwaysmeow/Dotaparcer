@@ -8,6 +8,13 @@ import (
 )
 
 func (db *dotabase) InsertMatch(match *types.Match, pro bool) error {
+	if db == nil {
+		return fmt.Errorf("database instance is nil")
+	}
+	if match == nil {
+		return fmt.Errorf("match is nil")
+	}
+
 	query := `
 	INSERT INTO matches (id, radiant, dire, metaDif, pro)
 	VALUES ($1, $2, $3, $4, $5)

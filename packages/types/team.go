@@ -2,11 +2,12 @@ package types
 
 import (
 	"fmt"
-	"net/http"
 	"strconv"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+
+	"dotaparser/packages/request"
 )
 
 type Team struct {
@@ -16,15 +17,12 @@ type Team struct {
 
 func ParseTeams() ([]Team, error) {
 	url := "https://ru.dotabuff.com/esports/teams"
-	resp, err := http.Get(url)
+
+	resp, err := request.Request(url)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("failed to fetch data: %s", resp.Status)
-	}
 
 	doc, _ := goquery.NewDocumentFromReader(resp.Body)
 
@@ -45,14 +43,10 @@ func ParseTeams() ([]Team, error) {
 
 func (team *Team) ParseMatches() ([]int, error) {
 	url := fmt.Sprintf("https://ru.dotabuff.com/esports/teams/%s/matches", team.Id)
-	resp, err := http.Get(url)
+
+	resp, err := request.Request(url)
 	if err != nil {
 		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("failed to fetch data: %s", resp.Status)
 	}
 
 	doc, _ := goquery.NewDocumentFromReader(resp.Body)

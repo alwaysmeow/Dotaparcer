@@ -37,7 +37,7 @@ func (db *dotabase) Init() error {
         matches INT4[5]
     );
 	CREATE TABLE IF NOT EXISTS matches (
-        id INT PRIMARY KEY,
+        id bigint PRIMARY KEY,
 		radiant INT4[5],
 		dire INT4[5],
 		metaDif FLOAT8,

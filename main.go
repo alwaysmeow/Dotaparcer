@@ -18,15 +18,23 @@ func main() {
 		fmt.Println(err)
 	}
 
-	fmt.Println(teams)
-
 	for _, team := range teams {
-		fmt.Printf("Parsing %s", team.Name)
+		fmt.Printf("Parsing %s\n", team.Name)
 		matches, _ := team.ParseMatches()
 		for _, matchId := range matches {
-			fmt.Printf("Parsing match %d", matchId)
-			match, _ := types.ParseMatch(matchId, heroes)
-			db.InsertMatch(match, true)
+			fmt.Printf("Parsing match %d\n", matchId)
+			match, err := types.ParseMatch(matchId, heroes)
+
+			if err != nil {
+				fmt.Println(err)
+			} else {
+				err = db.InsertMatch(match, true)
+
+				fmt.Printf("Insert match %d\n", matchId)
+				if err != nil {
+					fmt.Println(err)
+				}
+			}
 		}
 	}
 
