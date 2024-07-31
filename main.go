@@ -4,6 +4,7 @@ import (
 	"dotaparser/packages/dotabase"
 	"dotaparser/packages/types"
 	"fmt"
+	"time"
 )
 
 func main() {
@@ -19,21 +20,29 @@ func main() {
 	}
 
 	for _, team := range teams {
-		fmt.Printf("Parsing %s\n", team.Name)
-		matches, _ := team.ParseMatches()
+		matches, err := team.ParseMatches()
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Println(team.Id, matches)
+
+		time.Sleep(time.Second)
 		for _, matchId := range matches {
-			fmt.Printf("Parsing match %d\n", matchId)
-			match, err := types.ParseMatch(matchId, heroes)
+			if !db.MatchExist(matchId) {
+				match, err := types.ParseMatch(matchId, heroes)
 
-			if err != nil {
-				fmt.Println(err)
-			} else {
-				err = db.InsertMatch(match, true)
-
-				fmt.Printf("Insert match %d\n", matchId)
 				if err != nil {
 					fmt.Println(err)
+				} else {
+					err = db.InsertMatch(match, true)
+
+					fmt.Printf("Insert match %d\n", matchId)
+					if err != nil {
+						fmt.Println(err)
+					}
 				}
+
+				time.Sleep(time.Second)
 			}
 		}
 	}

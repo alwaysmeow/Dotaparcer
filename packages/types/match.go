@@ -56,6 +56,7 @@ func ParseMatch(id int, heroes *Heroes) (*Match, error) {
 		for _, h := range *heroes {
 			heroname := h.Name
 			heroname = strings.ReplaceAll(heroname, " ", "-")
+			heroname = strings.ReplaceAll(heroname, "'", "")
 			heroname = strings.ToLower(heroname)
 			if name == heroname {
 				hero = &h

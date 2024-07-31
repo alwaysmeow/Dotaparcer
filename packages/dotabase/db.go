@@ -38,9 +38,10 @@ func (db *dotabase) Init() error {
     );
 	CREATE TABLE IF NOT EXISTS matches (
         id bigint PRIMARY KEY,
+		rwon BOOLEAN,
 		radiant INT4[5],
 		dire INT4[5],
-		metaDif FLOAT8,
+		metadif FLOAT8,
 		pro BOOLEAN
     );
     `
