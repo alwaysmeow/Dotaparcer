@@ -3,7 +3,7 @@ package main
 import (
 	"dotaparser/packages/cache"
 	"dotaparser/packages/dotabase"
-	"dotaparser/packages/types"
+	"dotaparser/packages/parser"
 	"fmt"
 )
 
@@ -18,7 +18,7 @@ func main() {
 		fmt.Println(err)
 	}
 
-	teams, err := types.ParseTeams()
+	teams, err := parser.ParseTeams()
 
 	if err != nil {
 		fmt.Println(err)
@@ -28,7 +28,7 @@ func main() {
 
 	for _, team := range teams {
 		fmt.Println(team.Name)
-		matches, err := team.ParseMatches(4)
+		matches, err := parser.ParseTeamMatches(&team, 4)
 
 		if err != nil {
 			fmt.Println(err)
