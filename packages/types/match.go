@@ -27,7 +27,7 @@ func (match *Match) Log() {
 }
 
 func ParseMatch(id int, heroes *Heroes) (*Match, error) {
-	url := fmt.Sprintf("https://dotabuff.com/matches/%d", id)
+	url := request.DotabuffUrl(fmt.Sprintf("/matches/%d", id))
 
 	resp, err := request.Request(url)
 	if err != nil {

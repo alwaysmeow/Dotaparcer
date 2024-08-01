@@ -16,7 +16,7 @@ type Team struct {
 }
 
 func ParseTeams() ([]Team, error) {
-	url := "https://dotabuff.com/esports/teams"
+	url := request.DotabuffUrl("/esports/teams")
 
 	resp, err := request.Request(url)
 	if err != nil {
@@ -42,7 +42,7 @@ func ParseTeams() ([]Team, error) {
 }
 
 func (team *Team) ParseMatches() ([]int, error) {
-	url := fmt.Sprintf("https://ru.dotabuff.com/esports/teams/%s/matches", team.Id)
+	url := request.DotabuffUrl(fmt.Sprintf("/esports/teams/%s/matches", team.Id))
 
 	resp, err := request.Request(url)
 	if err != nil {
