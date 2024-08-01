@@ -1,6 +1,7 @@
 package main
 
 import (
+	"dotaparser/packages/cache"
 	"dotaparser/packages/dotabase"
 	"dotaparser/packages/types"
 	"fmt"
@@ -11,7 +12,7 @@ func main() {
 	db := dotabase.GetDB()
 	db.Init()
 
-	heroes, err := db.GetHeroes()
+	_, err := db.GetHeroes()
 
 	if err != nil {
 		fmt.Println(err)
@@ -23,33 +24,20 @@ func main() {
 		fmt.Println(err)
 	}
 
+	cachedMatches, _ := cache.LoadCachedMatches()
+
 	for _, team := range teams {
-		matches, err := team.ParseMatches()
+		fmt.Println(team.Name)
+		matches, err := team.ParseMatches(4)
+
 		if err != nil {
 			fmt.Println(err)
 		}
-		fmt.Println(team.Id, matches)
 
-		// time.Sleep(3 * time.Second)
-		for _, matchId := range matches {
-			if !db.MatchExist(matchId) {
-				match, err := types.ParseMatch(matchId, &heroes)
-
-				if err != nil {
-					fmt.Println(err)
-				} else {
-					err = db.InsertMatch(match, true)
-
-					fmt.Printf("Insert match %d\n", matchId)
-					if err != nil {
-						fmt.Println(err)
-					}
-				}
-
-				// time.Sleep(3 * time.Second)
-			}
-		}
+		cachedMatches = append(cachedMatches, matches...)
 	}
+
+	cache.CacheMatches(cachedMatches)
 
 	db.Close()
 }

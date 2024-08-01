@@ -41,7 +41,7 @@ func ParseTeams() ([]Team, error) {
 	return teams, nil
 }
 
-func (team *Team) ParseMatches() ([]int, error) {
+func (team *Team) ParseMatches(page int) ([]int, error) {
 	url := request.DotabuffUrl(fmt.Sprintf("/esports/teams/%s/matches", team.Id))
 
 	resp, err := request.Request(url)
