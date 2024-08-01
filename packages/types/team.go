@@ -16,7 +16,7 @@ type Team struct {
 }
 
 func ParseTeams() ([]Team, error) {
-	url := "https://ru.dotabuff.com/esports/teams"
+	url := "https://dotabuff.com/esports/teams"
 
 	resp, err := request.Request(url)
 	if err != nil {

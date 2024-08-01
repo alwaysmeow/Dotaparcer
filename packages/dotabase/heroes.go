@@ -1,6 +1,7 @@
 package dotabase
 
 import (
+	"database/sql"
 	"dotaparser/packages/types"
 	"fmt"
 
@@ -21,7 +22,7 @@ func (db *dotabase) GetHeroes() (types.Heroes, error) {
 	for rows.Next() {
 		var hero types.Hero
 		var winrates []float64
-		var matches []int
+		var matches []sql.NullInt64
 
 		err := rows.Scan(&hero.Id, &hero.Name, pq.Array(&winrates), pq.Array(&matches))
 		if err != nil {
@@ -30,7 +31,7 @@ func (db *dotabase) GetHeroes() (types.Heroes, error) {
 
 		for i := 0; i < 5; i++ {
 			hero.Winrate[i] = winrates[i]
-			hero.Matches[i] = matches[i]
+			hero.Matches[i] = int(matches[i].Int64)
 		}
 
 		heroes[hero.Id] = hero

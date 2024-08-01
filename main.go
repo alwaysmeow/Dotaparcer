@@ -4,14 +4,18 @@ import (
 	"dotaparser/packages/dotabase"
 	"dotaparser/packages/types"
 	"fmt"
-	"time"
 )
 
 func main() {
-	heroes, _ := types.ParseHeroes()
 
 	db := dotabase.GetDB()
 	db.Init()
+
+	heroes, err := db.GetHeroes()
+
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	teams, err := types.ParseTeams()
 
@@ -26,10 +30,10 @@ func main() {
 		}
 		fmt.Println(team.Id, matches)
 
-		time.Sleep(time.Second)
+		// time.Sleep(3 * time.Second)
 		for _, matchId := range matches {
 			if !db.MatchExist(matchId) {
-				match, err := types.ParseMatch(matchId, heroes)
+				match, err := types.ParseMatch(matchId, &heroes)
 
 				if err != nil {
 					fmt.Println(err)
@@ -42,7 +46,7 @@ func main() {
 					}
 				}
 
-				time.Sleep(time.Second)
+				// time.Sleep(3 * time.Second)
 			}
 		}
 	}

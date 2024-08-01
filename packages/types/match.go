@@ -1,6 +1,7 @@
 package types
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
@@ -48,6 +49,7 @@ func ParseMatch(id int, heroes *Heroes) (*Match, error) {
 	}
 
 	var matchHeroes [10]*Hero
+	heroesCounter := 0
 
 	doc.Find("table.match-team-table td.cell-fill-image a").Each(func(i int, tag *goquery.Selection) {
 		name := tag.AttrOr("href", "")
@@ -65,10 +67,15 @@ func ParseMatch(id int, heroes *Heroes) (*Match, error) {
 		}
 		if hero != nil {
 			matchHeroes[i] = hero
+			heroesCounter += 1
 		} else {
 			fmt.Printf("Can't find hero: %s\n", name)
 		}
 	})
+
+	if heroesCounter != 10 {
+		return nil, errors.New("сan't parse heroes")
+	}
 
 	match := Match{
 		Id:      id,
