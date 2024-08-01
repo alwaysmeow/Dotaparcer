@@ -14,7 +14,9 @@ func CacheMatches(numbers []int) error {
 	}
 	defer file.Close()
 
-	for _, number := range numbers {
+	ids := unique(numbers)
+
+	for _, number := range ids {
 		_, err := fmt.Fprintf(file, "%d\n", number)
 		if err != nil {
 			return fmt.Errorf("can't write into file: %w", err)
@@ -47,4 +49,25 @@ func LoadCachedMatches() ([]int, error) {
 	}
 
 	return numbers, nil
+}
+
+func unique(arr []int) []int {
+	seen := make(map[int]struct{})
+	uniqueArr := []int{}
+
+	for _, val := range arr {
+		_, ok := seen[val]
+		if !ok {
+			seen[val] = struct{}{}
+			uniqueArr = append(uniqueArr, val)
+		}
+	}
+
+	return uniqueArr
+}
+
+func UniqueMatches() {
+	ids, _ := LoadCachedMatches()
+	ids = unique(ids)
+	CacheMatches(ids)
 }
