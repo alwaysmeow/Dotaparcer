@@ -1,10 +1,5 @@
 package request
 
-import (
-	"fmt"
-	"math/rand"
-)
-
 func DotabuffUrl(path string) string {
 	domens := []string{
 		"https://dotabuff.com",
@@ -14,7 +9,7 @@ func DotabuffUrl(path string) string {
 		"https://fr.dotabuff.com",
 	}
 
-	url := domens[rand.Intn(len(domens))] + path
-	fmt.Println(url)
+	url := domens[0] + path
+
 	return url
 }

@@ -56,11 +56,7 @@ func ParseMatch(id int, heroes *Heroes) (*Match, error) {
 		name = name[strings.LastIndex(name, "/")+1:]
 		var hero *Hero
 		for _, h := range *heroes {
-			heroname := h.Name
-			heroname = strings.ReplaceAll(heroname, " ", "-")
-			heroname = strings.ReplaceAll(heroname, "'", "")
-			heroname = strings.ToLower(heroname)
-			if name == heroname {
+			if name == h.FormatName {
 				hero = &h
 				break
 			}

@@ -21,6 +21,11 @@ func (heroes *Heroes) Init() {
 	file.Close()
 
 	_ = json.Unmarshal(byteValue, &heroes)
+
+	for key, hero := range *heroes {
+		hero.AddFormatName()
+		(*heroes)[key] = hero
+	}
 }
 
 func (heroes *Heroes) find(name string) (int, bool) {

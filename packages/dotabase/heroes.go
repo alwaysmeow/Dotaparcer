@@ -34,6 +34,8 @@ func (db *dotabase) GetHeroes() (types.Heroes, error) {
 			hero.Matches[i] = int(matches[i].Int64)
 		}
 
+		hero.AddFormatName()
+
 		heroes[hero.Id] = hero
 	}
 
