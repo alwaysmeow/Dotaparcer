@@ -46,7 +46,7 @@ func ParseMatch(id int, heroes *types.Heroes) (*types.Match, error) {
 			}
 		}
 		if hero != nil {
-			matchHeroes[i] = hero
+			matchHeroes[heroesCounter] = hero
 			heroesCounter += 1
 		} else {
 			fmt.Printf("Can't find hero: %s\n", name)

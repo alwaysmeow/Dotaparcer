@@ -1,6 +1,8 @@
 package types
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type Draft struct {
 	Heroes   [5]*Hero
@@ -94,23 +96,31 @@ func (grid *DraftGrid) solved() bool {
 func (grid *DraftGrid) fixation() float64 {
 	x, y := -1, -1
 
-	for i := 0; i < 5; i++ {
-		for j := 0; j < 5; j++ {
-			if grid[i][j] < 1 {
-				if x+y < 0 || grid[i][j] > grid[x][y] {
-					x, y = i, j
-				}
-			} else {
-				for k := 0; k < 5; k++ {
-					if k != i && grid[k][j] > 0 {
-						x, y = i, j
+	maxMetrica := 0.
+
+	for pos := 0; pos < 5; pos++ {
+		sum := 0.
+		for hero := 0; hero < 5; hero++ {
+			sum += grid[hero][pos]
+		}
+		if sum > 0 {
+			for hero := 0; hero < 5; hero++ {
+				monopoly := grid[hero][pos] / sum
+				metrica := monopoly * grid[hero][pos]
+				if metrica < 1 {
+					if monopoly == 1 {
+						x, y = hero, pos
+						maxMetrica = 1
+						break
+					}
+					if x+y < 0 || metrica > maxMetrica {
+						x, y = hero, pos
+						maxMetrica = metrica
 					}
 				}
 			}
 		}
 	}
-
-	rounded := grid[x][y]
 
 	for i := 0; i < 5; i++ {
 		grid[x][i] = 0
@@ -118,7 +128,7 @@ func (grid *DraftGrid) fixation() float64 {
 	}
 	grid[x][y] = 1
 
-	return rounded
+	return maxMetrica
 }
 
 func (grid *DraftGrid) correction() {

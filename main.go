@@ -1,41 +1,46 @@
 package main
 
-import "dotaparser/packages/cache"
+import (
+	"dotaparser/packages/cache"
+	"dotaparser/packages/dotabase"
+	"dotaparser/packages/parser"
+	"fmt"
+)
 
 func main() {
-	/*
-		db := dotabase.GetDB()
-		db.Init()
+	db := dotabase.GetDB()
+	db.Init()
 
-		_, err := db.GetHeroes()
+	heroes, err := db.GetHeroes()
 
-		if err != nil {
-			fmt.Println(err)
-		}
+	if err != nil {
+		fmt.Println(err)
+	}
 
-		teams, err := parser.ParseTeams()
+	cachedMatches, _ := cache.LoadCachedMatches()
 
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		cachedMatches, _ := cache.LoadCachedMatches()
-
-		for _, team := range teams {
-			fmt.Println(team.Name)
-			matches, err := parser.ParseTeamMatches(&team, 4)
+	errc := 0
+	for _, mId := range cachedMatches {
+		if !db.MatchExist(mId) {
+			fmt.Println("Parse", mId)
+			match, err := parser.ParseMatch(mId, &heroes)
 
 			if err != nil {
 				fmt.Println(err)
+				if errc > 5 {
+					break
+				}
+				errc += 1
+			} else {
+				fmt.Println("Insert", mId)
+				db.InsertMatch(match, true)
 			}
-
-			cachedMatches = append(cachedMatches, matches...)
+		} else {
+			fmt.Println(mId, "already parsed")
 		}
+	}
 
-		cache.CacheMatches(cachedMatches)
+	cache.CacheMatches(cachedMatches)
 
-		db.Close()
-	*/
-
-	cache.UniqueMatches()
+	db.Close()
 }

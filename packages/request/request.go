@@ -29,6 +29,9 @@ func Request(url string) (*http.Response, error) {
 		return nil, err
 	}
 
+	req.Header.Set("Sec-Ch-Ua", "\"Not)A;Brand\";v=\"99\", \"Google Chrome\";v=\"127\", \"Chromium\";v=\"127\"")
+	req.Header.Set("Sec-Ch-Ua-Mobile", "?0")
+	req.Header.Set("Sec-Ch-Ua-Platform", "\"macOS\"")
 	req.Header.Set("User-Agent", UserAgent())
 
 	client := &http.Client{}
